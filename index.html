@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Company Document & Management System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Kanit', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1920&auto=format&fit=crop') no-repeat center center fixed;
+      background-size: cover;
+      color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      transition: background 0.5s ease;
+    }
+
+    /* Glassmorphism Classes */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 28px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    }
+
+    .glass-btn {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 16px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .glass-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .page {
+      display: none;
+      width: 100%;
+      max-width: 1100px;
+    }
+
+    .page.active {
+      display: flex;
+    }
+
+    /* ==========================================
+       1. LOGIN PAGE
+       ========================================== */
+    #login-page {
+      max-width: 820px;
+      align-items: stretch;
+      gap: 20px;
+    }
+
+    .login-left {
+      flex: 1.2;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .login-title {
+      font-size: 2.2rem;
+      font-weight: 600;
+      margin-bottom: 25px;
+    }
+
+    .input-group {
+      margin-bottom: 18px;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: rgba(0, 0, 0, 0.2);
+      color: #fff;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .input-field::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .login-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .btn-submit {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: none;
+      background: #ffffff;
+      color: #000;
+      cursor: pointer;
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-right {
+      flex: 1;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: rgba(0, 0, 0, 0.15);
+    }
+
+    .date-display-top {
+      display: flex;
+      gap: 15px;
+      align-items: baseline;
+    }
+
+    .day-abbr { font-size: 2.5rem; font-weight: 500; }
+    .date-num-large { font-size: 4rem; font-weight: 300; line-height: 1; }
+    .month-full { font-size: 1.6rem; font-weight: 300; margin-top: 5px; }
+    .time-text { font-size: 3.2rem; font-weight: 600; }
+    .time-unit { font-size: 1.6rem; font-weight: 300; }
+
+    /* ==========================================
+       2. DASHBOARD PAGE
+       ========================================== */
+    #dashboard-page {
+      height: 620px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .sidebar-left {
+      width: 80px;
+      background: rgba(0, 0, 0, 0.2);
+      border-right: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 0;
+      gap: 25px;
+    }
+
+    .sidebar-icon {
+      width: 45px;
+      height: 45px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+
+    .dashboard-content {
+      flex: 1;
+      padding: 35px 45px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .top-profile-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .user-profile-card {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 8px 20px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .avatar-guest {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #ffffff;
+      color: #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .dashboard-center-info { margin-top: 10px; }
+    .full-date-display { font-size: 1.4rem; color: rgba(255, 255, 255, 0.9); margin-bottom: 8px; }
+    .dashboard-time-display { font-size: 4.2rem; font-weight: 600; line-height: 1; }
+
+    .dashboard-actions-area {
+      display: flex;
+      gap: 20px;
+      justify-content: flex-end;
+    }
+
+    .action-glass-btn {
+      width: 240px;
+      padding: 24px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 22px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: left;
+    }
+
+    .action-glass-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-4px);
+    }
+
+    /* ==========================================
+       3. DOCUMENT SELECTION & FORM PAGE
+       ========================================== */
+    #doc-page, #history-page, #admin-page {
+      padding: 35px;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .doc-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .doc-card {
+      padding: 25px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .doc-card:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .form-container {
+      display: none;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 25px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Print Styles */
+    @media print {
+      body * { visibility: hidden; }
+      .printable-area, .printable-area * { visibility: visible; }
+      .printable-area { position: absolute; left: 0; top: 0; width: 100%; color: #000; background: #fff; padding: 20px; }
+    }
+
+    /* Table Styles */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    th { background: rgba(0, 0, 0, 0.2); }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================
+       1. LOGIN PAGE
+       ========================================== -->
+  <div id="login-page" class="page glass-card active">
+    <div class="login-left">
+      <div>
+        <div id="txt-welcome" class="login-title">Welcome</div>
+        <div style="font-size: 1.1rem; margin-bottom: 20px; color: rgba(255,255,255,0.8);" id="txt-subwelcome">กรุณาเข้าสู่ระบบพนักงาน</div>
+
+        <div class="input-group">
+          <input type="text" id="username" class="input-field" placeholder="Username (เช่น admin หรือ staff1)">
+        </div>
+        <div class="input-group">
+          <input type="password" id="password" class="input-field" placeholder="Password (เช่น 1234)">
+        </div>
+
+        <div class="login-actions">
+          <span style="font-size: 0.85rem; color: rgba(255,255,255,0.6);">Admin: admin / 1234</span>
+          <button class="btn-submit" onclick="login()">➔</button>
+        </div>
+      </div>
+
+      <div style="font-size: 0.8rem; color: rgba(255,255,255,0.5);" id="txt-footer">
+        ระบบออกเอกสารและจัดการข้อมูลบริษัท | CS Awning & Design
+      </div>
+    </div>
+
+    <div class="login-right glass-card">
+      <div>
+        <div class="date-display-top">
+          <span class="day-abbr" id="login-day">พฤ.</span>
+          <span class="date-num-large" id="login-date">8</span>
+        </div>
+        <div class="month-full" id="login-month">ตุลาคม</div>
+      </div>
+
+      <div>
+        <span class="time-text" id="login-time">14.30</span> <span class="time-unit">น.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       2. DASHBOARD PAGE
+       ========================================== -->
+  <div id="dashboard-page" class="page glass-card">
+    <div class="sidebar-left">
+      <div class="sidebar-icon" title="Dashboard" onclick="showPage('dashboard-page')">🏠</div>
+      <div class="sidebar-icon" title="งานเอกสาร" onclick="showPage('doc-page')">📄</div>
+      <div class="sidebar-icon" title="ประวัติเอกสาร" onclick="showPage('history-page')">📁</div>
+      <div class="sidebar-icon" id="admin-icon" title="หลังบ้าน Admin" style="display:none;" onclick="showPage('admin-page')">⚙️</div>
+      <div class="sidebar-icon" title="ออกจากระบบ" onclick="logout()" style="margin-top:auto;">🚪</div>
+    </div>
+
+    <div class="dashboard-content">
+      <div class="top-profile-bar">
+        <h2 id="txt-company-name">CS Awning System</h2>
+        <div class="user-profile-card">
+          <div style="text-align: right;">
+            <div id="user-display-name" style="font-size: 0.9rem; font-weight: 500;">Welcome, Guest</div>
+            <div id="user-display-role" style="font-size: 0.75rem; color: rgba(255,255,255,0.6);">ตำแหน่ง: พนักงาน</div>
+          </div>
+          <div class="avatar-guest">👤</div>
+        </div>
+      </div>
+
+      <div class="dashboard-center-info">
+        <div class="full-date-display" id="dash-full-date">วันพฤหัสบดี ที่ 8 ตุลาคม 2026</div>
+        <div class="dashboard-time-display"><span id="dash-time">14:30</span> <span style="font-size: 1.5rem; font-weight: 300;">น.</span></div>
+      </div>
+
+      <div class="dashboard-actions-area">
+        <div class="action-glass-btn" onclick="showPage('doc-page')">
+          <h3 style="font-size: 1.2rem; margin-bottom: 5px;">📄 งานเอกสาร</h3>
+          <p style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">สร้าง/ออกใบเสนอราคา ใบเสร็จ และหนังสือรับรอง</p>
+        </div>
+
+        <div class="action-glass-btn" onclick="showPage('history-page')">
+          <h3 style="font-size: 1.2rem; margin-bottom: 5px;">📁 ประวัติเอกสาร</h3>
+          <p style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">ดูประวัติเอกสารและฐานข้อมูลลูกค้า</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       3. DOCUMENT SELECTION & FORM PAGE
+       ========================================== -->
+  <div id="doc-page" class="page glass-card">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h2>📄 ออกเอกสาร / ทำงานเอกสาร</h2>
+      <button class="glass-btn" onclick="showPage('dashboard-page')">กลับหน้าหลัก</button>
+    </div>
+
+    <!-- เมนูเลือกประเภทเอกสาร -->
+    <div class="doc-grid" id="doc-menu-grid">
+      <div class="doc-card" onclick="openDocForm('ใบเสนอราคา')">
+        <h3>📋 ใบเสนอราคา (Quotation)</h3>
+        <p style="font-size:0.85rem; color:rgba(255,255,255,0.6); margin-top:5px;">ออกใบเสนอราคาให้ลูกค้า</p>
+      </div>
+      <div class="doc-card" onclick="openDocForm('ใบส่งสินค้า')">
+        <h3>🚚 ใบส่งสินค้า / ใบแจ้งหนี้</h3>
+        <p style="font-size:0.85rem; color:rgba(255,255,255,0.6); margin-top:5px;">ออกใบส่งของเพื่อวางบิล</p>
+      </div>
+      <div class="doc-card" onclick="openDocForm('ใบเสร็จรับเงิน/ใบกำกับภาษี')">
+        <h3>🧾 ใบเสร็จรับเงิน / ใบกำกับภาษี</h3>
+        <p style="font-size:0.85rem; color:rgba(255,255,255,0.6); margin-top:5px;">ออกใบเสร็จรับเงินเมื่อรับชำระ</p>
+      </div>
+      <div class="doc-card" onclick="openDocForm('หนังสือรับรองเงินเดือน')">
+        <h3>ตราประทับ/หนังสือรับรองเงินเดือน</h3>
+        <p style="font-size:0.85rem; color:rgba(255,255,255,0.6); margin-top:5px;">ออกเอกสารรับรองสำหรับพนักงาน</p>
+      </div>
+    </div>
+
+    <!-- ฟอร์มกรอกข้อมูลเอกสาร -->
+    <div id="doc-form-container" class="form-container">
+      <h3 id="selected-doc-title" style="margin-bottom: 15px;">กรอกข้อมูล</h3>
+      <div class="input-group">
+        <input type="text" id="cust-name" class="input-field" placeholder="ชื่อลูกค้า / ชื่อบริษัท">
+      </div>
+      <div class="input-group">
+        <input type="text" id="doc-detail" class="input-field" placeholder="รายละเอียดรายการ / สินค้า">
+      </div>
+      <div class="input-group">
+        <input type="number" id="doc-amount" class="input-field" placeholder="จำนวนเงินรวม (บาท)">
+      </div>
+
+      <div style="display:flex; gap:10px; margin-top:15px;">
+        <button class="glass-btn" style="background:#28a745;" onclick="saveAndPrintDoc()">💾 บันทึกและพิมพ์ / ออก PDF</button>
+        <button class="glass-btn" onclick="closeDocForm()">ยกเลิก</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Printable Hidden Area -->
+  <div id="print-area" class="printable-area" style="display:none;"></div>
+
+  <!-- ==========================================
+       4. HISTORY & CUSTOMER DATABASE PAGE
+       ========================================== -->
+  <div id="history-page" class="page glass-card">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h2>📁 ประวัติเอกสาร & ข้อมูลลูกค้า</h2>
+      <button class="glass-btn" onclick="showPage('dashboard-page')">กลับหน้าหลัก</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>วันที่</th>
+          <th>ประเภทเอกสาร</th>
+          <th>ชื่อลูกค้า / บริษัท</th>
+          <th>จำนวนเงิน</th>
+          <th>ผู้ออกเอกสาร</th>
+        </tr>
+      </thead>
+      <tbody id="history-table-body">
+        <tr>
+          <td>08/10/2026</td>
+          <td>ใบเสนอราคา</td>
+          <td>บริษัท พรชัยการผ้าใบ จำกัด</td>
+          <td>15,000 บาท</td>
+          <td>admin</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ==========================================
+       5. ADMIN BACK-OFFICE PAGE
+       ========================================== -->
+  <div id="admin-page" class="page glass-card">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h2>⚙️ ระบบจัดการหลังบ้าน (Admin Dashboard)</h2>
+      <button class="glass-btn" onclick="showPage('dashboard-page')">กลับหน้าหลัก</button>
+    </div>
+
+    <!-- ส่วนที่ 1: สร้างและจัดการพนักงาน -->
+    <div style="background:rgba(0,0,0,0.2); padding:20px; border-radius:16px;">
+      <h3 style="margin-bottom:10px;">👤 สร้างบัญชีพนักงาน (Staff Account)</h3>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <input type="text" id="new-staff-user" class="input-field" style="flex:1;" placeholder="Username">
+        <input type="text" id="new-staff-name" class="input-field" style="flex:1;" placeholder="ชื่อ-นามสกุล">
+        <input type="text" id="new-staff-role" class="input-field" style="flex:1;" placeholder="ตำแหน่ง">
+        <input type="password" id="new-staff-pass" class="input-field" style="flex:1;" placeholder="Password">
+        <button class="glass-btn" onclick="createStaff()">+ สร้างบัญชี</button>
+      </div>
+    </div>
+
+    <!-- ส่วนที่ 2: Customization ปรับแต่งข้อความและธีม -->
+    <div style="background:rgba(0,0,0,0.2); padding:20px; border-radius:16px; margin-top:15px;">
+      <h3 style="margin-bottom:10px;">🎨 Customization (ปรับแต่งหน้าบ้าน)</h3>
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <input type="text" id="cfg-welcome" class="input-field" placeholder="ข้อความ Welcome หน้า Login">
+        <input type="text" id="cfg-company" class="input-field" placeholder="ชื่อบริษัทบน Dashboard">
+        <input type="text" id="cfg-bg-url" class="input-field" placeholder="ลิงก์รูปวอลเปเปอร์พื้นหลัง (URL)">
+        <button class="glass-btn" onclick="updateSiteSettings()">💾 บันทึกการตั้งค่าหน้าบ้าน</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // System State
+    let currentUser = null;
+    let staffAccounts = [
+      { user: 'admin', pass: '1234', name: 'ผู้ดูแลระบบ (Admin)', role: 'Administrator', isAdmin: true },
+      { user: 'staff1', pass: '1234', name: 'สมชาย ใจดี', role: 'เจ้าหน้าที่เอกสาร', isAdmin: false }
+    ];
+
+    let docHistory = [];
+
+    // Real-time Clock System
+    function updateClock() {
+      const now = new Date();
+      const daysAbbr = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
+      const daysFull = ['วันอาทิตย์', 'วันจันทร์', 'วันอังคาร', 'วันพุธ', 'วันพฤหัสบดี', 'วันศุกร์', 'วันเสาร์'];
+      const monthsFull = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const timeStr = `${hours}.${minutes}`;
+
+      // Update Login Date
+      document.getElementById('login-day').innerText = daysAbbr[now.getDay()];
+      document.getElementById('login-date').innerText = now.getDate();
+      document.getElementById('login-month').innerText = monthsFull[now.getMonth()];
+      document.getElementById('login-time').innerText = timeStr;
+
+      // Update Dashboard Date
+      document.getElementById('dash-full-date').innerText = `${daysFull[now.getDay()]} ที่ ${now.getDate()} ${monthsFull[now.getMonth()]} ${now.getFullYear()}`;
+      document.getElementById('dash-time').innerText = `${hours}:${minutes}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Navigation System
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+    }
+
+    // Login System
+    function login() {
+      const u = document.getElementById('username').value;
+      const p = document.getElementById('password').value;
+
+      const found = staffAccounts.find(a => a.user === u && a.pass === p);
+      if (found) {
+        currentUser = found;
+        document.getElementById('user-display-name').innerText = `Welcome, ${found.name}`;
+        document.getElementById('user-display-role').innerText = `ตำแหน่ง: ${found.role}`;
+        
+        // Show Admin Panel Icon if Admin
+        if (found.isAdmin) {
+          document.getElementById('admin-icon').style.display = 'flex';
+        } else {
+          document.getElementById('admin-icon').style.display = 'none';
+        }
+
+        showPage('dashboard-page');
+      } else {
+        alert('Username หรือ Password ไม่ถูกต้อง!');
+      }
+    }
+
+    function logout() {
+      currentUser = null;
+      document.getElementById('username').value = '';
+      document.getElementById('password').value = '';
+      showPage('login-page');
+    }
+
+    // Document System
+    let currentDocType = '';
+    function openDocForm(docType) {
+      currentDocType = docType;
+      document.getElementById('selected-doc-title').innerText = `กรอกข้อมูล: ${docType}`;
+      document.getElementById('doc-menu-grid').style.display = 'none';
+      document.getElementById('doc-form-container').style.display = 'block';
+    }
+
+    function closeDocForm() {
+      document.getElementById('doc-menu-grid').style.display = 'grid';
+      document.getElementById('doc-form-container').style.display = 'none';
+    }
+
+    function saveAndPrintDoc() {
+      const cust = document.getElementById('cust-name').value;
+      const detail = document.getElementById('doc-detail').value;
+      const amount = document.getElementById('doc-amount').value;
+
+      if (!cust || !amount) {
+        alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+        return;
+      }
+
+      // Record to history
+      const now = new Date();
+      const dateStr = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}`;
+      docHistory.push({ date: dateStr, type: currentDocType, cust, amount: `${amount} บาท`, user: currentUser.name });
+
+      // Update History Table
+      renderHistory();
+
+      // Printable Output
+      const printArea = document.getElementById('print-area');
+      printArea.innerHTML = `
+        <h1 style="text-align:center;">${currentDocType}</h1>
+        <hr><br>
+        <p><strong>วันที่:</strong> ${dateStr}</p>
+        <p><strong>ชื่อลูกค้า / บริษัท:</strong> ${cust}</p>
+        <p><strong>รายละเอียด:</strong> ${detail}</p>
+        <p><strong>ยอดเงินรวม:</strong> ${amount} บาท</p>
+        <br><br>
+        <p style="text-align:right;">ผู้ออกเอกสาร: ${currentUser.name}</p>
+      `;
+
+      window.print();
+      closeDocForm();
+    }
+
+    function renderHistory() {
+      const tbody = document.getElementById('history-table-body');
+      tbody.innerHTML = docHistory.map(item => `
+        <tr>
+          <td>${item.date}</td>
+          <td>${item.type}</td>
+          <td>${item.cust}</td>
+          <td>${item.amount}</td>
+          <td>${item.user}</td>
+        </tr>
+      `).join('');
+    }
+
+    // Admin Functions
+    function createStaff() {
+      const u = document.getElementById('new-staff-user').value;
+      const n = document.getElementById('new-staff-name').value;
+      const r = document.getElementById('new-staff-role').value;
+      const p = document.getElementById('new-staff-pass').value;
+
+      if (u && p && n) {
+        staffAccounts.push({ user: u, pass: p, name: n, role: r, isAdmin: false });
+        alert(`สร้างบัญชีพนักงานเรียบร้อย: ${n}`);
+        document.getElementById('new-staff-user').value = '';
+        document.getElementById('new-staff-name').value = '';
+        document.getElementById('new-staff-role').value = '';
+        document.getElementById('new-staff-pass').value = '';
+      }
+    }
+
+    function updateSiteSettings() {
+      const wel = document.getElementById('cfg-welcome').value;
+      const comp = document.getElementById('cfg-company').value;
+      const bg = document.getElementById('cfg-bg-url').value;
+
+      if (wel) document.getElementById('txt-welcome').innerText = wel;
+      if (comp) document.getElementById('txt-company-name').innerText = comp;
+      if (bg) document.body.style.backgroundImage = `url('${bg}')`;
+
+      alert('อัปเดตการตั้งค่าหน้าบ้านเรียบร้อยแล้ว!');
+    }
+  </script>
+</body>
+</html>
